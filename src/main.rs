@@ -32,7 +32,7 @@ mod solutions {
             let input: Vec<&str> = binding.split_ascii_whitespace().collect();
 
             let mut sum = 0;
-            for line in input {
+            input.iter().for_each(|&line| {
                 let mut ints_in_line: Vec<i32> = Vec::new();
 
                 for i in 0..line.len() {
@@ -56,6 +56,7 @@ mod solutions {
                     for lenght in 3..=5 {
                         let substring: String =
                             get_substring(line, i, i + lenght).unwrap_or("").to_owned();
+
                         if digit_word_to_int(substring.to_string()).is_some() {
                             ints_in_line.push(digit_word_to_int(substring.to_string()).unwrap());
                         }
@@ -63,7 +64,7 @@ mod solutions {
                 }
 
                 sum += ints_in_line.first().unwrap() * 10 + ints_in_line.last().unwrap();
-            }
+            });
             println!("{}", sum); // 54985
         }
     }
