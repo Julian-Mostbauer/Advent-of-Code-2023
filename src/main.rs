@@ -13,15 +13,23 @@ mod solutions {
             let input: Vec<&str> = binding.split_ascii_whitespace().collect();
 
             let mut sum = 0;
-            for line in input {
+            for line in &input {
                 let mut ints_in_line: Vec<i32> = Vec::new();
                 for c in line.chars() {
                     if c.to_string().parse::<i32>().is_ok() {
                         ints_in_line.push(c.to_string().parse::<i32>().unwrap())
                     }
                 }
+
                 sum += ints_in_line.first().unwrap() * 10 + ints_in_line.last().unwrap();
             }
+
+            // for c in line.chars() {
+            //     if c.to_string().parse::<i32>().is_ok() {
+            //         ints_in_line.push(c.to_string().parse::<i32>().unwrap())
+            //     }
+            // }
+
             println!("{}", sum); //55130
         }
 
@@ -70,5 +78,5 @@ mod solutions {
     }
 }
 fn main() {
-    solutions::day1::part2();
+    solutions::day1::part1();
 }
