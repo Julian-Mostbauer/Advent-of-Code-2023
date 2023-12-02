@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'day1'",
+            "name": "Debug executable 'Advent-of-Code-2023'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=day1",
+                    "--bin=Advent-of-Code-2023",
                     "--package=Advent-of-Code-2023"
                 ],
                 "filter": {
-                    "name": "day1",
+                    "name": "Advent-of-Code-2023",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'day1'",
+            "name": "Debug unit tests in executable 'Advent-of-Code-2023'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=day1",
+                    "--bin=Advent-of-Code-2023",
                     "--package=Advent-of-Code-2023"
                 ],
                 "filter": {
-                    "name": "day1",
+                    "name": "Advent-of-Code-2023",
                     "kind": "bin"
                 }
             },

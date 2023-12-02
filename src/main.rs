@@ -8,8 +8,8 @@ mod solutions {
 
         pub fn part1() {
             let binding = get_file_content(
-            "C:\\Users\\julia\\OneDrive\\Dokumente\\GitHub\\Advent-of-Code-2023\\inputs\\day1.txt",
-        );
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day1.txt",
+            );
             let input: Vec<&str> = binding.split_ascii_whitespace().collect();
 
             let mut sum = 0;
@@ -23,13 +23,6 @@ mod solutions {
 
                 sum += ints_in_line.first().unwrap() * 10 + ints_in_line.last().unwrap();
             }
-
-            // for c in line.chars() {
-            //     if c.to_string().parse::<i32>().is_ok() {
-            //         ints_in_line.push(c.to_string().parse::<i32>().unwrap())
-            //     }
-            // }
-
             println!("{}", sum); //55130
         }
 
@@ -76,7 +69,149 @@ mod solutions {
             println!("{}", sum); // 54985
         }
     }
+
+    pub mod day2 {
+        //12 red cubes, 13 green cubes, and 14 blue cubes
+        use crate::utils::input::get_file_content;
+        use itertools::Itertools;
+
+        pub fn part1() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day2.txt",
+            );
+
+            let mut impossible_games: Vec<i32> = Vec::new();
+
+            let games: Vec<&str> = input.split('\n').collect();
+
+            for game in games {
+                let game_info: Vec<&str> = game.split(':').collect();
+
+                let id = game_info
+                    .first()
+                    .unwrap()
+                    .split_ascii_whitespace()
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap_or(&"0")
+                    .parse::<i32>()
+                    .unwrap_or(0);
+
+                let reveals: Vec<&str> = game
+                    .split(':')
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap()
+                    .split(';')
+                    .collect();
+
+                for reveal in reveals {
+                    let dice_info: Vec<&str> = reveal.split(',').collect();
+
+                    for info in dice_info {
+                        let parts: Vec<&str> = info.split(' ').collect();
+
+                        let num_part = parts.get(1).unwrap_or(&"0");
+                        let color_part = parts.last().unwrap_or(&"red");
+
+                        match *color_part {
+                            "red" => {
+                                if num_part.parse::<i32>().unwrap() > 12 {
+                                    impossible_games.push(id);
+                                    println!(
+                                        "ID: {} Number: {} Dice: {} ",
+                                        id, num_part, color_part
+                                    );
+                                }
+                            }
+                            "green" => {
+                                if num_part.parse::<i32>().unwrap() > 13 {
+                                    impossible_games.push(id);
+                                    println!(
+                                        "ID: {} Number: {} Dice: {} ",
+                                        id, num_part, color_part
+                                    );
+                                }
+                            }
+                            "blue" => {
+                                if num_part.parse::<i32>().unwrap() > 14 {
+                                    impossible_games.push(id);
+                                    println!(
+                                        "ID: {} Number: {} Dice: {} ",
+                                        id, num_part, color_part
+                                    );
+                                }
+                            }
+                            _ => (),
+                        }
+                    }
+                }
+            }
+
+            impossible_games = impossible_games.into_iter().unique().collect();
+
+            println!("{:.?}", impossible_games);
+
+            let sum: i32 = (1..=100).sum::<i32>() - impossible_games.iter().sum::<i32>();
+
+            println!("{}", sum);
+        }
+
+        pub fn part2() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day2.txt",
+            );
+
+            let mut power = 0;
+
+            let games: Vec<&str> = input.split('\n').collect();
+
+            for game in games {
+                let game_info: Vec<&str> = game.split(':').collect();
+
+                let mut max_red = 0;
+                let mut max_green = 0;
+                let mut max_blue = 0;
+
+                let reveals: Vec<&str> = game
+                    .split(':')
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap()
+                    .split(';')
+                    .collect();
+
+                for reveal in reveals {
+                    let dice_info: Vec<&str> = reveal.split(',').collect();
+
+                    for info in dice_info {
+                        let parts: Vec<&str> = info.split(' ').collect();
+
+                        let num_part = parts.get(1).unwrap_or(&"0");
+                        let color_part = parts.last().unwrap_or(&"red");
+
+                        match color_part.trim() {
+                            "red" => {
+                                max_red = max_red.max(num_part.parse::<i32>().unwrap());
+                            }
+                            "green" => {
+                                max_green = max_green.max(num_part.parse::<i32>().unwrap());
+                            }
+                            "blue" => {
+                                max_blue = max_blue.max(num_part.parse::<i32>().unwrap());
+                            }
+                            _ => (),
+                        }
+                    }
+                }
+
+                power += max_blue * max_green * max_red;
+            } // 69110
+
+            println!("{}", power);
+        }
+    }
 }
 fn main() {
-    solutions::day1::part1();
+    solutions::day2::part2();
 }
