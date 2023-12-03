@@ -211,7 +211,58 @@ mod solutions {
             println!("{}", power);
         }
     }
+
+    pub mod day3 {
+        use crate::utils::input::get_file_content;
+
+        pub fn part1() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day3-test.txt",
+            );
+
+            let lines: Vec<&str> = input.split_ascii_whitespace().collect();
+
+            let lenght = lines[0].len();
+            let height = lines.len();
+
+            let mut num_indexes: Vec<(usize, usize)> = Vec::new();
+
+            for x in 0..lenght {
+                for y in 0..height {
+                    if lines[x]
+                        .chars()
+                        .nth(y)
+                        .unwrap()
+                        .to_string()
+                        .parse::<usize>()
+                        .is_ok()
+                    {
+                        num_indexes.push((x, y))
+                    }
+                }
+            }
+
+            let mut combined_num_indexes: Vec<Vec<(usize, usize)>> = Vec::new();
+
+            for mut i in 0..num_indexes.len() - 1 {
+                let mut num: Vec<(usize, usize)> = Vec::new();
+                while num_indexes[i].1 + 1
+                    == num_indexes.get(i + 1).unwrap_or(&(999_usize, 999_usize)).1
+                {
+                    num.push(num_indexes[i]);
+                    i += 1;
+                }
+                combined_num_indexes.push(num);
+            }
+
+            println!("{:.?}", combined_num_indexes);
+
+            let mut valid_num_indexes: Vec<(usize, usize)> = Vec::new();
+
+            println!("{:.?}", num_indexes);
+        }
+    }
 }
 fn main() {
-    solutions::day2::part2();
+    solutions::day3::part1();
 }
