@@ -230,45 +230,19 @@ mod solutions {
             let mut points: i128 = 0;
 
             for line in lines {
-                let parts: Vec<&str> = line.split(':').collect();
+                let matches = get_matches_line(line);
 
-                let num_left: Vec<&str> = parts
-                    .get(1)
-                    .unwrap()
-                    .split('|')
-                    .collect::<Vec<&str>>()
-                    .first()
-                    .unwrap()
-                    .split_ascii_whitespace()
-                    .collect();
-
-                let num_right: Vec<&str> = parts
-                    .get(1)
-                    .unwrap()
-                    .split('|')
-                    .collect::<Vec<&str>>()
-                    .get(1)
-                    .unwrap()
-                    .split_ascii_whitespace()
-                    .collect();
-
-                let mut shared_nums: Vec<&str> = Vec::new();
-                let mut shared_count = 0;
-                for num in num_right {
-                    if num_left.contains(&num) {
-                        shared_nums.push(num);
-                        shared_count += 1;
-                    }
-                }
-
-                let mut point = 2i128.pow((shared_count - 1).max(0) as u32);
-                if shared_count == 0 {
-                    point = 0;
-                }
-                println!("{:.?}", point);
-                points += point;
+                matches_to_points(matches);
             }
             println!("{:.?}", points);
+        }
+
+        fn matches_to_points(matches: i128) -> i128 {
+            let mut point = 2i128.pow((matches - 1).max(0) as u32);
+            if matches == 0 {
+                point = 0;
+            }
+            point
         }
 
         pub fn part2() {
@@ -276,9 +250,57 @@ mod solutions {
                 "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4.txt",
             );
             let lines: Vec<&str> = input.split('\n').collect();
+            let mut points: i128 = 0;
+
+            let mut times = 0;
+
+            for i in 0..lines.len() {
+                let matches = get_matches_line(lines.get(i).unwrap());
+                times = matches;
+
+                points += point;
+                let point = matches_to_points(matches);
+            }
+
+            println!("{points}");
+        }
+
+        pub fn get_matches_line(line: &str) -> i128 {
+            let parts: Vec<&str> = line.split(':').collect();
+
+            let num_left: Vec<&str> = parts
+                .get(1)
+                .unwrap()
+                .split('|')
+                .collect::<Vec<&str>>()
+                .first()
+                .unwrap()
+                .split_ascii_whitespace()
+                .collect();
+
+            let num_right: Vec<&str> = parts
+                .get(1)
+                .unwrap()
+                .split('|')
+                .collect::<Vec<&str>>()
+                .get(1)
+                .unwrap()
+                .split_ascii_whitespace()
+                .collect();
+
+            let mut shared_nums: Vec<&str> = Vec::new();
+            let mut shared_count = 0;
+            for num in num_right {
+                if num_left.contains(&num) {
+                    shared_nums.push(num);
+                    shared_count += 1;
+                }
+            }
+
+            shared_count
         }
     }
 }
 fn main() {
-    solutions::day4::part1();
+    solutions::day4::part2();
 }
