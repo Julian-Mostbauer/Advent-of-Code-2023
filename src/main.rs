@@ -223,9 +223,11 @@ mod solutions {
 
         pub fn part1() {
             let input = get_file_content(
-                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4-test.txt",
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4.txt",
             );
             let lines: Vec<&str> = input.split('\n').collect();
+
+            let mut points: i128 = 0;
 
             for line in lines {
                 let parts: Vec<&str> = line.split(':').collect();
@@ -235,7 +237,7 @@ mod solutions {
                     .unwrap()
                     .split('|')
                     .collect::<Vec<&str>>()
-                    .get(0)
+                    .first()
                     .unwrap()
                     .split_ascii_whitespace()
                     .collect();
@@ -250,8 +252,30 @@ mod solutions {
                     .split_ascii_whitespace()
                     .collect();
 
-                let shared_count
+                let mut shared_nums: Vec<&str> = Vec::new();
+                let mut shared_count = 0;
+                for num in num_right {
+                    if num_left.contains(&num) {
+                        shared_nums.push(num);
+                        shared_count += 1;
+                    }
+                }
+
+                let mut point = 2i128.pow((shared_count - 1).max(0) as u32);
+                if shared_count == 0 {
+                    point = 0;
+                }
+                println!("{:.?}", point);
+                points += point;
             }
+            println!("{:.?}", points);
+        }
+
+        pub fn part2() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4.txt",
+            );
+            let lines: Vec<&str> = input.split('\n').collect();
         }
     }
 }
