@@ -213,56 +213,48 @@ mod solutions {
     }
 
     pub mod day3 {
+        use itertools::Itertools;
+
+        use crate::utils::input::get_file_content;
+    }
+
+    pub mod day4 {
         use crate::utils::input::get_file_content;
 
         pub fn part1() {
             let input = get_file_content(
-                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day3-test.txt",
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4-test.txt",
             );
+            let lines: Vec<&str> = input.split('\n').collect();
 
-            let lines: Vec<&str> = input.split_ascii_whitespace().collect();
+            for line in lines {
+                let parts: Vec<&str> = line.split(':').collect();
 
-            let lenght = lines[0].len();
-            let height = lines.len();
+                let num_left: Vec<&str> = parts
+                    .get(1)
+                    .unwrap()
+                    .split('|')
+                    .collect::<Vec<&str>>()
+                    .get(0)
+                    .unwrap()
+                    .split_ascii_whitespace()
+                    .collect();
 
-            let mut num_indexes: Vec<(usize, usize)> = Vec::new();
+                let num_right: Vec<&str> = parts
+                    .get(1)
+                    .unwrap()
+                    .split('|')
+                    .collect::<Vec<&str>>()
+                    .get(1)
+                    .unwrap()
+                    .split_ascii_whitespace()
+                    .collect();
 
-            for x in 0..lenght {
-                for y in 0..height {
-                    if lines[x]
-                        .chars()
-                        .nth(y)
-                        .unwrap()
-                        .to_string()
-                        .parse::<usize>()
-                        .is_ok()
-                    {
-                        num_indexes.push((x, y))
-                    }
-                }
+                let shared_count
             }
-
-            let mut combined_num_indexes: Vec<Vec<(usize, usize)>> = Vec::new();
-
-            for mut i in 0..num_indexes.len() - 1 {
-                let mut num: Vec<(usize, usize)> = Vec::new();
-                while num_indexes[i].1 + 1
-                    == num_indexes.get(i + 1).unwrap_or(&(999_usize, 999_usize)).1
-                {
-                    num.push(num_indexes[i]);
-                    i += 1;
-                }
-                combined_num_indexes.push(num);
-            }
-
-            println!("{:.?}", combined_num_indexes);
-
-            let mut valid_num_indexes: Vec<(usize, usize)> = Vec::new();
-
-            println!("{:.?}", num_indexes);
         }
     }
 }
 fn main() {
-    solutions::day3::part1();
+    solutions::day4::part1();
 }
