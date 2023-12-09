@@ -30,4 +30,47 @@ pub mod general {
             &_ => None,
         }
     }
+
+    pub fn matches_to_points(matches: i128) -> i128 {
+        let mut point = 2i128.pow((matches - 1).max(0) as u32);
+        if matches == 0 {
+            point = 0;
+        }
+        point
+    }
+
+    pub fn get_matches_line(line: &str) -> i128 {
+        let parts: Vec<&str> = line.split(':').collect();
+
+        let num_left: Vec<&str> = parts
+            .get(1)
+            .unwrap()
+            .split('|')
+            .collect::<Vec<&str>>()
+            .first()
+            .unwrap()
+            .split_ascii_whitespace()
+            .collect();
+
+        let num_right: Vec<&str> = parts
+            .get(1)
+            .unwrap()
+            .split('|')
+            .collect::<Vec<&str>>()
+            .get(1)
+            .unwrap()
+            .split_ascii_whitespace()
+            .collect();
+
+        let mut shared_nums: Vec<&str> = Vec::new();
+        let mut shared_count = 0;
+        for num in num_right {
+            if num_left.contains(&num) {
+                shared_nums.push(num);
+                shared_count += 1;
+            }
+        }
+
+        shared_count
+    }
 }

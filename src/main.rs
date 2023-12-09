@@ -1,5 +1,6 @@
 mod utils;
 
+#[allow(dead_code)]
 mod solutions {
 
     pub mod day1 {
@@ -219,6 +220,7 @@ mod solutions {
     }
 
     pub mod day4 {
+        use crate::utils::general::*;
         use crate::utils::input::get_file_content;
 
         pub fn part1() {
@@ -236,71 +238,176 @@ mod solutions {
             }
             println!("{:.?}", points);
         }
+    }
 
-        fn matches_to_points(matches: i128) -> i128 {
-            let mut point = 2i128.pow((matches - 1).max(0) as u32);
-            if matches == 0 {
-                point = 0;
-            }
-            point
+    pub mod day8 {
+        use crate::utils::input::get_file_content;
+
+        #[derive(Debug, Clone)]
+        struct LinkedPath {
+            value: String,
+            next_left: String,
+            next_right: String,
         }
-
-        pub fn part2() {
-            let input = get_file_content(
-                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day4.txt",
-            );
-            let lines: Vec<&str> = input.split('\n').collect();
-            let mut points: i128 = 0;
-
-            let mut times = 0;
-
-            for i in 0..lines.len() {
-                let matches = get_matches_line(lines.get(i).unwrap());
-                times = matches;
-
-                points += point;
-                let point = matches_to_points(matches);
+        impl LinkedPath {
+            fn next_left(&self) -> String {
+                let next_left = &self.next_left;
+                next_left.to_string().trim().to_string()
             }
+            fn next_right(&self) -> String {
+                let next_right = &self.next_right;
+                next_right.to_string().trim().to_string()
+            }
+            fn from_string(input: String) -> LinkedPath {
+                let value = input
+                    .split('=')
+                    .collect::<Vec<&str>>()
+                    .first()
+                    .unwrap()
+                    .to_string()
+                    .trim()
+                    .to_string();
 
-            println!("{points}");
-        }
+                let next_left = input
+                    .split('=')
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap()
+                    .split(',')
+                    .collect::<Vec<&str>>()
+                    .first()
+                    .unwrap()
+                    .to_string()
+                    .split_off(2)
+                    .trim()
+                    .to_string();
 
-        pub fn get_matches_line(line: &str) -> i128 {
-            let parts: Vec<&str> = line.split(':').collect();
+                let mut next_right = input
+                    .split('=')
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap()
+                    .split(',')
+                    .collect::<Vec<&str>>()
+                    .last()
+                    .unwrap()
+                    .to_string()
+                    .trim()
+                    .to_string();
 
-            let num_left: Vec<&str> = parts
-                .get(1)
-                .unwrap()
-                .split('|')
-                .collect::<Vec<&str>>()
-                .first()
-                .unwrap()
-                .split_ascii_whitespace()
-                .collect();
+                next_right.pop();
 
-            let num_right: Vec<&str> = parts
-                .get(1)
-                .unwrap()
-                .split('|')
-                .collect::<Vec<&str>>()
-                .get(1)
-                .unwrap()
-                .split_ascii_whitespace()
-                .collect();
-
-            let mut shared_nums: Vec<&str> = Vec::new();
-            let mut shared_count = 0;
-            for num in num_right {
-                if num_left.contains(&num) {
-                    shared_nums.push(num);
-                    shared_count += 1;
+                LinkedPath {
+                    value,
+                    next_left,
+                    next_right,
                 }
             }
 
-            shared_count
+            fn find_with_value(map: &[LinkedPath], search_value: &str) -> Option<LinkedPath> {
+                for path in map {
+                    let found_value = path.value.to_string();
+                    if found_value == search_value {
+                        return Some(path.clone());
+                    }
+                }
+                None
+            }
+        }
+
+        pub fn part1() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day8.txt",
+            );
+
+            let lines = input.split('\n').collect::<Vec<&str>>();
+            let lr_instructions: Vec<char> =
+                (*lines.first().unwrap().trim().chars().collect::<Vec<char>>()).to_vec();
+
+            let map: Vec<LinkedPath> = Vec::from(&lines[1..])
+                .iter()
+                .map(|map_element| LinkedPath::from_string(map_element.to_string()))
+                .collect();
+
+            let mut counter: usize = 0;
+            let mut current = map.first().unwrap().clone();
+            while current.value != "ZZZ" {
+                for instruction in &lr_instructions {
+                    current = match instruction {
+                        'L' => LinkedPath::find_with_value(&map, &current.next_left()).unwrap(),
+                        'R' => LinkedPath::find_with_value(&map, &current.next_right()).unwrap(),
+                        _ => panic!(),
+                    };
+
+                    counter += 1;
+
+                    if counter % 100000 == 0 {
+                        println!("{:.?} - {}", current, counter);
+                    }
+                }
+            }
+
+            println!("{:.?}", counter);
+        }
+
+        pub fn part2_optimised() {}
+
+        pub fn part2() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day8.txt",
+            );
+
+            let lines = input.split('\n').collect::<Vec<&str>>();
+            let lr_instructions: Vec<char> =
+                (*lines.first().unwrap().trim().chars().collect::<Vec<char>>()).to_vec();
+
+            let map: Vec<LinkedPath> = lines[1..]
+                .iter()
+                .map(|map_element| LinkedPath::from_string(map_element.to_string()))
+                .collect();
+
+            let mut counter: usize = 0;
+            let mut current_nodes: Vec<LinkedPath> = map
+                .iter()
+                .filter(|s| s.value.ends_with('A'))
+                .cloned()
+                .collect::<Vec<LinkedPath>>();
+
+            let total_nodes = map.len();
+            let mut z_nodes = current_nodes
+                .iter()
+                .filter(|s| s.value.ends_with('Z'))
+                .count();
+
+            while z_nodes < total_nodes {
+                for instruction in &lr_instructions {
+                    let mut new_current_nodes = Vec::new();
+                    for current in &current_nodes {
+                        let next_current = match instruction {
+                            'L' => LinkedPath::find_with_value(&map, &current.next_left()).unwrap(),
+                            'R' => {
+                                LinkedPath::find_with_value(&map, &current.next_right()).unwrap()
+                            }
+
+                            _ => panic!(),
+                        };
+                        counter += 1;
+                        new_current_nodes.push(next_current);
+
+                        if counter % 100_000 == 0 {
+                            println!("{counter}");
+                        }
+                    }
+                    current_nodes = new_current_nodes;
+                }
+                z_nodes = current_nodes
+                    .iter()
+                    .filter(|s| s.value.ends_with('Z'))
+                    .count();
+            }
         }
     }
 }
 fn main() {
-    solutions::day4::part2();
+    solutions::day8::part2_optimised();
 }
