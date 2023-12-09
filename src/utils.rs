@@ -12,6 +12,8 @@ pub(crate) mod input {
 }
 
 pub mod general {
+    use itertools::Itertools;
+
     pub fn get_substring(s: &str, start: usize, end: usize) -> Result<&str, &'static str> {
         s.get(start..end).ok_or("Invalid indices for substring")
     }
@@ -72,5 +74,13 @@ pub mod general {
         }
 
         shared_count
+    }
+
+    pub fn to_lines(s: String) -> Vec<String> {
+        s.split('\n')
+            .collect::<Vec<&str>>()
+            .iter_mut()
+            .map(|l| l.to_string())
+            .collect_vec()
     }
 }

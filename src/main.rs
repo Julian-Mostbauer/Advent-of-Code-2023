@@ -407,7 +407,90 @@ mod solutions {
             }
         }
     }
+
+    pub mod day9 {
+        use itertools::Itertools;
+
+        use crate::utils::general::to_lines;
+        use crate::utils::input::get_file_content;
+
+        pub fn part1() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day9.txt",
+            );
+
+            let lines = to_lines(input);
+            let mut sum = 0;
+            for line in &lines {
+                let mut differences: Vec<Vec<i32>> = vec![to_num_vec(line)];
+
+                let mut new_differences = get_differences(to_num_vec(line));
+                while !new_differences.iter().all(|n| *n == 0) {
+                    differences.push(new_differences.clone());
+                    new_differences = get_differences(new_differences);
+                }
+                differences.push(new_differences.clone());
+
+                let mut new_num = 0;
+
+                differences.iter().for_each(|difference| {
+                    new_num += difference.last().unwrap();
+                });
+
+                sum += new_num;
+            }
+            println!("{sum}");
+        }
+
+        pub fn part2() {
+            let input = get_file_content(
+                "C:/Users/julia/OneDrive/Dokumente/GitHub/Advent-of-Code-2023/inputs/day9.txt",
+            );
+
+            let lines = to_lines(input);
+            let mut sum = 0;
+
+            for line in &lines {
+                let mut differences: Vec<Vec<i32>> = vec![to_num_vec(line)];
+
+                let mut new_differences = get_differences(to_num_vec(line));
+                while !new_differences.iter().all(|n| *n == 0) {
+                    differences.push(new_differences.clone());
+                    new_differences = get_differences(new_differences);
+                }
+                differences.push(new_differences.clone());
+
+                let mut new_num = 0;
+                let rev_differences: Vec<Vec<i32>> = differences.into_iter().rev().collect_vec();
+
+                for i in 0..(rev_differences.len() - 1) {
+                    new_num = rev_differences[i + 1].first().unwrap() - new_num;
+                }
+
+                sum += new_num;
+                println!("{new_num}");
+            }
+            println!("{sum}");
+        }
+
+        pub fn get_differences(v: Vec<i32>) -> Vec<i32> {
+            let mut result = Vec::new();
+
+            for i in 0..(v.len() - 1) {
+                result.push(v[i + 1] - v[i]);
+            }
+
+            result
+        }
+
+        pub fn to_num_vec(input: &str) -> Vec<i32> {
+            input
+                .split_whitespace()
+                .filter_map(|s| s.parse::<i32>().ok())
+                .collect()
+        }
+    }
 }
 fn main() {
-    solutions::day8::part2_optimised();
+    solutions::day9::part2();
 }
